@@ -1,6 +1,5 @@
 package vn.giakhanhvn.networking;
 
-import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -18,7 +17,6 @@ public class DitMeToidongy {
 	
 	public static void main(String args[]) throws Exception {
 		STARTED = System.currentTimeMillis();
-		DitMeToidongy.c();
 		var scan = new Scanner(System.in);
 		out("\n[BETA v0.1] PHAN MEM SPAM CHU KY toidongy.vn CHO LANG GOM TRI DO BALLS\n"
 			+ "Author: Nguyen Gia Khanh (GiaKhanhVN)\n"
@@ -30,7 +28,13 @@ public class DitMeToidongy {
 		);
 		Signal.handle(new Signal("INT"), new SignalHandler() {
 			public void handle(Signal signal) {
-				out("\n\n[SYS] Da dung may ao Java! Session da gui tong cong " + COUNTER + " requests\nThoi gian chay cua session: " + ((System.currentTimeMillis() - STARTED) / 1000D) + "s\n");
+				out("\n\n[SYS] Da dung may ao Java! Session da gui tong cong " 
+					+ COUNTER + " requests\nThoi gian chay cua session: " + ((System.currentTimeMillis() - STARTED) / 1000D) + "s\nBam X de thoat khoi phan mem!");
+				try {
+					Thread.sleep(60000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				System.exit(0);
 			}
 		});
@@ -84,7 +88,7 @@ public class DitMeToidongy {
 					*/
 					out("[ERROR] Thread #" + Thread.currentThread().getId() + " da xay ra loi! Stack Trace: "
 					+ e.getStackTrace()[0]);
-					out("[SYS] Chuong trinh khoi dong lai trong 60s!");
+					out("[SYS] Chuong trinh  lai trong 60s!");
 					try {
 						Thread.sleep(60000);
 						System.exit(0);
@@ -140,10 +144,5 @@ public class DitMeToidongy {
 
 	static void out(Object a) {
 		System.out.println(a);
-	}
-	
-	static void c() {
-		System.out.print("\033[H\033[2J");  
-		System.out.flush();
 	}
 }
