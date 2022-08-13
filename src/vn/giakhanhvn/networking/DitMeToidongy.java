@@ -18,7 +18,7 @@ public class DitMeToidongy {
 	public static void main(String args[]) throws Exception {
 		STARTED = System.currentTimeMillis();
 		var scan = new Scanner(System.in);
-		out("\n[BETA v0.1] PHAN MEM SPAM CHU KY toidongy.vn CHO LANG GOM TRI DO BALLS\n"
+		out("\n[BETA v0.1.1] PHAN MEM SPAM CHU KY toidongy.vn CHO LANG GOM TRI DO BALLS\n"
 			+ "Author: Nguyen Gia Khanh (GiaKhanhVN)\n"
 			+ "\n* Luu y: so luong Thread la so luong ma JVM\n"
 			+ "se branch ra trong qua trinh spam, neu may tinh\n"
