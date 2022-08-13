@@ -20,7 +20,7 @@ public class DitMeToidongy {
 		STARTED = System.currentTimeMillis();
 		DitMeToidongy.c();
 		var scan = new Scanner(System.in);
-		out("\n[BETA] PHAN MEM SPAM CHU KY toidongy.vn CHO LANG GOM TRI DO BALLS\n"
+		out("\n[BETA v0.1] PHAN MEM SPAM CHU KY toidongy.vn CHO LANG GOM TRI DO BALLS\n"
 			+ "Author: Nguyen Gia Khanh (GiaKhanhVN)\n"
 			+ "\n* Luu y: so luong Thread la so luong ma JVM\n"
 			+ "se branch ra trong qua trinh spam, neu may tinh\n"
@@ -117,7 +117,7 @@ public class DitMeToidongy {
 		// Open connection bang Java HTTPClient
 		var client = HttpClient.newHttpClient();
 		// Build request Header va Payload
-		var request = HttpRequest.newBuilder().uri(URI.create("https://toidongy.vn/"))
+		var request = HttpRequest.newBuilder().uri(URI.create("https://toidongy.vn/wp-admin/admin-ajax.php"))
 				.setHeader("X-Requested-With", "root")
 				.setHeader("Accept", "application/json, text/javascript, /; q=0.01")
 				.setHeader("Accept-Language", "en-GB,en;q=0.9,en-US;q=0.8")
@@ -135,7 +135,7 @@ public class DitMeToidongy {
 			+ "\nFake IP da dung: " + randIp + "\nThoi gian thuc hien: " + ((System.currentTimeMillis() - milis) / 1000D) + "s\nThuc hien lan thu: " + COUNTER + "\n");
 		
 		// Tam thoi sleep thread trong 2s cho do bi spam
-		Thread.sleep(2000);
+		Thread.sleep(3000);
 	}
 
 	static void out(Object a) {
