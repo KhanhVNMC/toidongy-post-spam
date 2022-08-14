@@ -8,9 +8,10 @@ This project is free-to-use and free to distribute, but please credit me when yo
 
 # How to use:
 Download the executable in the **Release** tab
+Install `JRE 18` (Required for all methods): https://www.oracle.com/java/technologies/downloads/#jdk18-windows
 
 **METHOD #1: Classic Java** You can use this program in the `.jar` form by simply downloading JRE 18.0.1 from the Oracle website
-and run these following commands (Windows)
+and run these following commands in Command Prompt (Windows)
 
 `cd C:\User\YOURNAME\Downloads`
 
