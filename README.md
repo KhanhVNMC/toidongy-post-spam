@@ -1,3 +1,5 @@
+# The website POST functionality has been disable (what a coward) so the program is rendered useless now, stay tune for more tools!
+
 # toidongy.vn POST Spammer
 
 Simple standalone Java Application use to spam POST request to the `toidongy.vn` website
