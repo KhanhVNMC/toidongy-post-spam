@@ -97,12 +97,13 @@ public class DitMeToidongy {
 					 * Catch Exception (co the do web timeout
 					 * hoac an ban-ip), co the dung VPN de tiep tuc
 					*/
-					out("[ERROR] Thread #" + Thread.currentThread().getId() + " da xay ra loi! Stack Trace: "
-					+ e.getStackTrace()[0]);
-					out("[SYS] Chuong trinh dung lai trong 60s!");
+					out("[ERROR] Thread #" + Thread.currentThread().getId() + " da xay ra loi!\nStack Trace: "
+					+ e.toString() + "\n  at " + e.getStackTrace()[0]);
 					suspendAllThreads();
 					try {
-						Thread.sleep(60000);
+						Thread.sleep(10000);
+						out("[SYS] Closing...");
+						Thread.sleep(1000);
 						System.exit(0);
 					} catch (Exception e1) {
 						e1.printStackTrace();
@@ -158,7 +159,8 @@ public class DitMeToidongy {
 		// Gui payload kem Header tu Client
 		var res = client.send(request, HttpResponse.BodyHandlers.ofString());
 		COUNTER++;
-		out("[LOG] Thread #" + Thread.currentThread().getId() + " thuc hien xong! Ma Status: " + res.statusCode()
+		try {
+			out("[LOG] Thread #" + Thread.currentThread().getId() + " thuc hien xong! Ma Status: " + res.statusCode()
 			+ "\n[LOG] Fake IP da dung: " + randIp + "\n[LOG] Thoi gian thuc hien: " + ((System.currentTimeMillis() - milis) / 1000D) + "s\n[LOG] Thuc hien lan thu: " + commaify(COUNTER) + "\n"
 			+ "[LOG] Fake Name da dung: " + randName
 			+ "\n[LOG] Quote da gui: " + randQuote
@@ -168,7 +170,11 @@ public class DitMeToidongy {
 				.replace("}", "")
 				.replace("\"success\":true,\"data\":\"", "")
 				.replace("\"", ""))) + "\n"
-		);
+			);
+		}
+		catch (NumberFormatException ex) {
+			throw new RuntimeException("Web khong phan hoi POST!");
+		}
 		// Tam thoi sleep thread trong 3s cho do bi spam
 		Thread.sleep(3000);
 	}
