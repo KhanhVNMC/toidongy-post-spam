@@ -1,6 +1,7 @@
-# NOTE: The website's POST function has been disabled (what a coward) so the program will not work right now!
-We haven't done yet, stay tune, i will be back
- If you use the program right now, all threads will throw a `RuntimeException` and shut down itself
+# NOTE: The toidongy.vn's POST function has been disabled!
+The website owner have disabled the POST function on the web to prevent people like us attacking (which is a pretty coward action) so the program can't be used right now, but they might come back in the future with more "security (lmao)" feature and brought the website back online. We're not done yet, stay tune, I will soon find the way around their method
+
+If you use the program right now, all threads will throw a `RuntimeException` and shut down itself
 
 # toidongy.vn POST Spammer
 
