@@ -26,5 +26,6 @@ and run these following commands in Command Prompt (Windows)
 
 Or you can directly compile from the source code if you wish!
 
-Contact me on Discord: `GiaKhanhVN#9583`
+Contact me: `khanhcarlo@gmail.com` / `henserdarknet@rus1255cccp`
+
 (C) 2022 XiTrayTechnologies, XiTrayNation
